@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siyanda Market — Township Entrepreneur Marketplace</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        siyandaOrange: '#f39c12',
+                        siyandaOrangeHover: '#d6840d',
+                        siyandaDarkGrey: '#2c3e50',
+                        siyandaLightGrey: '#bdc3c7',
+                        siyandaAccentGreen: '#27ae60',
+                        siyandaBg: '#f8f9fa'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+            background-color: #f8f9fa;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a6b0b5;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Prototype Mode Switcher (Simulating roles & states) -->
+    <div class="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2 text-xs md:text-sm flex flex-wrap justify-between items-center gap-2 z-50">
+        <div class="flex items-center gap-2 font-semibold">
+            <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+            Prototype Controller:
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <div>
+                <label class="font-medium mr-1 text-slate-700">Active View/Role:</label>
+                <select id="roleSelector" onchange="changeRole(this.value)" class="bg-white border border-amber-300 rounded px-2 py-0.5 font-semibold text-xs focus:ring-1 focus:ring-amber-500 outline-none">
+                    <option value="buyer">Buyer (Default)</option>
+                    <option value="seller">Seller (Naledi M.)</option>
+                    <option value="admin">Admin Dashboard</option>
+                </select>
+            </div>
+            <div class="hidden md:flex items-center gap-2 text-slate-500">|</div>
+            <div class="flex items-center gap-1">
+                <span class="font-medium text-slate-700">Quick Test Trigger:</span>
+                <button onclick="triggerQuickNotice('Simulated notification: New local craft listing added!')" class="bg-amber-200 hover:bg-amber-300 transition-colors px-2 py-0.5 rounded text-[11px] font-bold">
+                    Push Notification
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="bg-siyandaDarkGrey text-white sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="bg-siyandaOrange text-white p-2 rounded-lg flex items-center justify-center font-black tracking-wider shadow">
+                        <i data-lucide="shopping-bag" class="h-5 w-5"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white hover:text-siyandaOrange transition-colors">
+                        Siyanda<span class="text-siyandaOrange">Market</span>
+                    </span>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                    <button onclick="navigateTo('home')" id="nav-home" class="hover:text-siyandaOrange text-white transition-colors py-2 border-b-2 border-transparent">Home</button>
+                    <button onclick="navigateTo('marketplace')" id="nav-marketplace" class="hover:text-siyandaOrange text-slate-300 transition-colors py-2 border-b-2 border-transparent">Marketplace</button>
+                    <button onclick="navigateTo('profile')" id="nav-profile" class="hover:text-siyandaOrange text-slate-300 transition-colors py-2 border-b-2 border-transparent flex items-center gap-1.5">
+                        Profile <span id="profileBadgeDot" class="h-2 w-2 rounded-full bg-amber-400 hidden"></span>
+                    </button>
+                    <button onclick="navigateTo('admin')" id="nav-admin" class="hover:text-siyandaOrange text-slate-300 transition-colors py-2 border-b-2 border-transparent hidden">Admin Portal</button>
+                </nav>
+
+                <!-- Action Button & Login Toggle Simulation -->
+                <div class="hidden md:flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-xs border border-slate-600 rounded-full px-3 py-1 bg-slate-800 text-slate-300">
+                        <span id="headerUserIndicator" class="h-2 w-2 rounded-full bg-slate-400"></span>
+                        <span id="headerUserName">Guest Buyer</span>
+                    </div>
+                    <button id="authBtn" onclick="toggleAuth()" class="bg-transparent hover:bg-slate-800 text-white border border-slate-600 rounded-lg px-4 py-1.5 text-sm font-medium transition-all">
+                        Login
+                    </button>
+                </div>
+
+                <!-- Mobile Hamburger Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white focus:outline-none p-1 rounded hover:bg-slate-800" aria-label="Toggle Menu">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-siyandaDarkGrey border-t border-slate-700 transition-all duration-300">
+            <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3 text-base font-medium">
+                <button onclick="navigateTo('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-slate-800 text-white">Home</button>
+                <button onclick="navigateTo('marketplace'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white">Marketplace</button>
+                <button onclick="navigateTo('profile'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white">My Profile</button>
+                <button onclick="navigateTo('admin'); toggleMobileMenu()" id="mobileNavAdmin" class="hidden w-full text-left px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white">Admin Portal</button>
+                <div class="pt-4 pb-2 border-t border-slate-700 mt-2 px-3 flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <span id="mobileUserIndicator" class="h-2 w-2 rounded-full bg-slate-400"></span>
+                        <span id="mobileUserName">Guest Buyer</span>
+                    </div>
+                    <button id="mobileAuthBtn" onclick="toggleAuth(); toggleMobileMenu()" class="w-full text-center bg-siyandaOrange hover:bg-siyandaOrangeHover text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- FLOATING TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- MAIN BODY CONTENT -->
+    <main class="flex-grow">
+
+        <!-- SECTION 1: HOMEPAGE -->
+        <section id="section-home" class="page-view">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-r from-[#2c3e50] to-[#34495e] text-white py-16 md:py-24 px-4 overflow-hidden">
+                <div class="absolute inset-0 opacity-15">
+                    <div class="absolute inset-0 bg-[radial-gradient(#f39c12_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+                </div>
+                <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-7 space-y-6 text-left">
+                        <div class="inline-flex items-center gap-1.5 bg-siyandaOrange/20 text-siyandaOrange border border-siyandaOrange/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                            <span class="flex h-2 w-2 rounded-full bg-siyandaOrange"></span> Empowering Township Entrepreneurs
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight">
+                            Connecting Township Sellers to <span class="text-siyandaOrange">Verified</span> Buyers
+                        </h1>
+                        <p class="text-slate-300 text-lg md:text-xl max-w-xl leading-relaxed">
+                            Support local township businesses. Secure payments, instant logistics, and identity verification keep every single transaction safe and reliable.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                            <button onclick="navigateTo('marketplace')" class="bg-siyandaOrange hover:bg-siyandaOrangeHover text-white px-8 py-3.5 rounded-lg text-base font-bold shadow-lg shadow-siyandaOrange/20 transform active:scale-95 transition-all text-center">
+                                Browse Marketplace
+                            </button>
+                            <button onclick="simulateSellerOnboarding()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 px-8 py-3.5 rounded-lg text-base font-medium transition-all text-center">
+                                Sell Your Products
+                            </button>
+                        </div>
+                    </div>
+                    <div class="md:col-span-5 relative hidden md:block">
+                        <!-- Hero Graphic Panel -->
+                        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 shadow-2xl backdrop-blur-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-siyandaOrange opacity-10 rounded-full blur-2xl"></div>
+                            
+                            <h3 class="text-sm font-semibold uppercase tracking-wider text-siyandaOrange mb-4 flex items-center gap-2">
+                                <i data-lucide="trending-up" class="h-4 w-4"></i> Live Township Ecosystem
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3 bg-slate-900/60 p-3 rounded-lg border border-slate-700/50">
+                                    <div class="h-10 w-10 rounded-full bg-slate-700 flex items-center justify-center text-lg">💡</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-1.5 justify-between">
+                                            <p class="text-xs font-bold text-slate-200">Soweto Handcrafts</p>
+                                            <span class="bg-siyandaAccentGreen/10 text-siyandaAccentGreen border border-siyandaAccentGreen/20 text-[9px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5 font-bold">
+                                                <i data-lucide="check" class="h-2 w-2"></i> Verified Seller
+                                            </span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-400 truncate">Woven Reed Baskets & Clay Pots</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 bg-slate-900/60 p-3 rounded-lg border border-slate-700/50">
+                                    <div class="h-10 w-10 rounded-full bg-slate-700 flex items-center justify-center text-lg">👕</div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-1.5 justify-between">
+                                            <p class="text-xs font-bold text-slate-200">Khayelitsha Fashion</p>
+                                            <span class="bg-siyandaAccentGreen/10 text-siyandaAccentGreen border border-siyandaAccentGreen/20 text-[9px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5 font-bold">
+                                                <i data-lucide="check" class="h-2 w-2"></i> Verified Seller
+                                            </span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-400 truncate">Original Shweshwe Dress Prints</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-400">
+                                <span class="flex items-center gap-1"><i data-lucide="shield-check" class="h-4 w-4 text-siyandaAccentGreen"></i> 100% Identity Checked</span>
+                                <span class="flex items-center gap-1"><i data-lucide="truck" class="h-4 w-4 text-siyandaOrange"></i> Local Delivery</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Highlights Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
+                    <h2 class="text-3xl font-black text-siyandaDarkGrey tracking-tight">Built For Local Success</h2>
+                    <p class="text-slate-600">Siyanda Market breaks down the barriers keeping township businesses from growing beyond geographic borders.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Card 1 -->
+                    <div class="bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="bg-amber-100 text-siyandaOrange h-12 w-12 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="shield-check" class="h-6 w-6"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-siyandaDarkGrey mb-2">Verified Sellers</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Every local entrepreneur goes through secure ID and document verification via our secure admin audit system. Shop with peace of mind.
+                        </p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="bg-green-100 text-siyandaAccentGreen h-12 w-12 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="credit-card" class="h-6 w-6"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-siyandaDarkGrey mb-2">Secure Local Payments</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Support for instant EFT, cards, and mobile cash vouchers. Sellers only get paid once products are marked safe and delivered.
+                        </p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="bg-blue-100 text-blue-600 h-12 w-12 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="navigation" class="h-6 w-6"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-siyandaDarkGrey mb-2">Township-Smart Logistics</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Flexible local courier arrangements. No formal street address needed – we use drop-off points, local hubs, and GPS pin sharing.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curated Products Showcase Preview -->
+            <div class="bg-slate-100 py-16 border-t border-b border-slate-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col sm:flex-row items-center justify-between mb-10 gap-4">
+                        <div class="text-left">
+                            <h2 class="text-2xl font-black text-siyandaDarkGrey tracking-tight">Featured Township Products</h2>
+                            <p class="text-slate-600 text-sm">Supporting real entrepreneurs from Alexandra, Soweto, and Tembisa.</p>
+                        </div>
+                        <button onclick="navigateTo('marketplace')" class="text-siyandaOrange font-semibold hover:text-siyandaOrangeHover transition-colors flex items-center gap-1.5 text-sm">
+                            View All Products <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="homepage-featured-grid">
+                        <!-- Dynamic content filled by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call To Action -->
+            <div class="bg-gradient-to-br from-amber-50 to-orange-100 py-16 px-4">
+                <div class="max-w-4xl mx-auto text-center space-y-6">
+                    <h2 class="text-3xl font-black text-siyandaDarkGrey">Are You a Township Entrepreneur?</h2>
+                    <p class="text-slate-700 max-w-xl mx-auto leading-relaxed text-base">
+                        Get verified, list your locally produced goods, and unlock digital payments and nationwide shipping directly from your neighborhood.
+                    </p>
+                    <div class="pt-4 flex flex-wrap justify-center gap-4">
+                        <button onclick="simulateSellerOnboarding()" class="bg-siyandaOrange hover:bg-siyandaOrangeHover text-white px-8 py-3.5 rounded-lg text-base font-bold shadow-lg shadow-siyandaOrange/20 transition-all">
+                            Register as a Seller
+                        </button>
+                        <button onclick="navigateTo('marketplace')" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-3.5 rounded-lg text-base font-medium transition-all">
+                            Browse Local Catalog
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MARKETPLACE -->
+        <section id="section-marketplace" class="page-view hidden py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header Title -->
+                <div class="border-b border-slate-200 pb-5 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div class="text-left">
+                        <h1 class="text-3xl font-black text-siyandaDarkGrey tracking-tight">Siyanda Marketplace</h1>
+                        <p class="text-slate-600 text-sm mt-1">Discover, purchase, and support authentic local township businesses.</p>
+                    </div>
+                    <div class="text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200">
+                        Showing <span id="displayedProductsCount" class="font-bold text-slate-700">0</span> unique products
+                    </div>
+                </div>
+
+                <!-- Filters & Search Bar Section -->
+                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm mb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                        <!-- Search input -->
+                        <div class="lg:col-span-4 relative">
+                            <label for="marketSearch" class="sr-only">Search Products</label>
+                            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400"></i>
+                            <input type="text" id="marketSearch" oninput="applyMarketFilters()" placeholder="Search products, keywords, or location..." class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-11 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-siyandaOrange focus:bg-white transition-all">
+                        </div>
+                        
+                        <!-- Category Filter dropdown -->
+                        <div class="lg:col-span-3">
+                            <label for="marketCategory" class="sr-only">Category</label>
+                            <select id="marketCategory" onchange="applyMarketFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-siyandaOrange focus:bg-white transition-all">
+                                <option value="all">All Categories</option>
+                                <option value="Crafts">Art & Crafts</option>
+                                <option value="Clothing">Fashion & Clothing</option>
+                                <option value="Food">Food & Spices</option>
+                                <option value="Home">Home Décor</option>
+                            </select>
+                        </div>
+
+                        <!-- Seller Verification Toggle Switch -->
+                        <div class="lg:col-span-3 flex items-center justify-between sm:justify-start gap-3 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2">
+                            <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                                <i data-lucide="shield-check" class="h-4 w-4 text-siyandaAccentGreen"></i>
+                                Only Verified Sellers
+                            </span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="verifiedToggle" onchange="applyMarketFilters()" class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-siyandaAccentGreen"></div>
+                            </label>
+                        </div>
+
+                        <!-- Sort selector -->
+                        <div class="lg:col-span-2">
+                            <label for="marketSort" class="sr-only">Sort By</label>
+                            <select id="marketSort" onchange="applyMarketFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-siyandaOrange focus:bg-white transition-all">
+                                <option value="default">Default Sorting</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Grid Container -->
+                <div id="noProductsFoundState" class="hidden bg-slate-100 border border-dashed border-slate-300 rounded-xl p-12 text-center max-w-md mx-auto my-8">
+                    <div class="bg-slate-200 text-slate-500 h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="search-code" class="h-6 w-6"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-siyandaDarkGrey">No matching products</h3>
+                    <p class="text-slate-500 text-xs mt-1">Try resetting your search query or toggling off the "Only Verified Sellers" switch.</p>
+                    <button onclick="resetFilters()" class="mt-4 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-4 py-2 rounded font-semibold transition-colors">
+                        Reset All Filters
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="marketplace-grid">
+                    <!-- Dynamic Product Cards populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: PROFILE / REGISTRATION -->
+        <section id="section-profile" class="page-view hidden py-10">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6">
+                <!-- Header Card -->
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm mb-6 flex flex-col sm:flex-row items-center gap-6">
+                    <div class="h-20 w-20 rounded-full bg-slate-200 text-slate-600 border border-slate-300 flex items-center justify-center font-bold text-2xl relative">
+                        <span id="profileInitials">?</span>
+                        <span id="profileVerificationBadge" class="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-slate-300 border-2 border-white flex items-center justify-center text-white">
+                            <i data-lucide="shield" class="h-3 w-3"></i>
+                        </span>
+                    </div>
+                    <div class="text-center sm:text-left flex-1 space-y-1">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <h2 class="text-2xl font-black text-siyandaDarkGrey" id="profileNameDisplay">Guest User</h2>
+                            <span id="profileStatusBadge" class="inline-flex self-center items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">
+                                Unverified Buyer
+                            </span>
+                        </div>
+                        <p class="text-slate-500 text-sm" id="profileEmailDisplay">No email linked</p>
+                        <p class="text-slate-400 text-xs">Role Access: <span id="profileRoleDisplay" class="font-bold">Buyer</span></p>
+                    </div>
+                </div>
+
+                <!-- Split layout based on role context -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Left column: Main Account Options -->
+                    <div class="md:col-span-7 space-y-6">
+                        <!-- Verification Progress Panel -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-left">
+                            <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                                <i data-lucide="verified" class="h-5 w-5 text-siyandaOrange"></i>
+                                <h3 class="font-bold text-siyandaDarkGrey">Identity & Shop Verification</h3>
+                            </div>
+                            
+                            <p class="text-slate-600 text-sm mb-4">
+                                To protect our community from fraud and allow direct cash/EFT payouts, sellers must upload their national identity document and proof of township residency.
+                            </p>
+
+                            <!-- Live verification state tracker -->
+                            <div id="verificationStateBlock" class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3 mb-6">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-slate-500 font-medium">Approval Status:</span>
+                                    <span id="profileStatusBadgeValue" class="font-bold uppercase text-slate-600">NOT SUBMITTED</span>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-full h-2">
+                                    <div id="profileProgressTracker" class="bg-slate-400 h-2 rounded-full transition-all" style="width: 20%"></div>
+                                </div>
+                                <div class="text-[11px] text-slate-500" id="profileStatusMessage">
+                                    Please register as a seller and upload your identity documentation to start listing products.
+                                </div>
+                            </div>
+
+                            <!-- Upload Identity Documents Form -->
+                            <form id="verificationForm" onsubmit="handleVerificationSubmit(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="docFullname">Full Legal Name (as on ID)</label>
+                                    <input type="text" id="docFullname" required placeholder="e.g. Naledi Makhanya" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="docIdNumber">South African ID Number</label>
+                                    <input type="text" id="docIdNumber" required minlength="13" maxlength="13" placeholder="e.g. 9102145555084" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="docNotes">Entrepreneur Bio / Shop Notes</label>
+                                    <textarea id="docNotes" rows="3" placeholder="Describe the local goods you sell and which township you operate from..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1" for="docFile">Identity Document (PDF, PNG or JPG)</label>
+                                    <p class="text-[11px] text-slate-400 mb-2">Provide a clear copy of your SA Green Book, Smart ID card, or passport.</p>
+                                    <div class="border-2 border-dashed border-slate-200 hover:border-siyandaOrange/50 rounded-lg p-4 text-center cursor-pointer transition-colors relative bg-slate-50">
+                                        <input type="file" id="docFile" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileChange(event)">
+                                        <div class="space-y-1">
+                                            <i data-lucide="upload-cloud" class="h-8 w-8 mx-auto text-slate-400"></i>
+                                            <p id="fileNameDisplay" class="text-xs font-bold text-slate-600">Choose File or drag here</p>
+                                            <p class="text-[10px] text-slate-400">Max file size 5MB</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full bg-siyandaOrange hover:bg-siyandaOrangeHover text-white py-2.5 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-1">
+                                    Submit for Verification
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right column: Simulated listings or local wallet info -->
+                    <div class="md:col-span-5 space-y-6">
+                        <!-- Seller Specific: Inventory manager -->
+                        <div id="sellerProfileInventoryPanel" class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-left">
+                            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="package-plus" class="h-5 w-5 text-siyandaOrange"></i>
+                                    <h3 class="font-bold text-siyandaDarkGrey">Manage Shop Products</h3>
+                                </div>
+                            </div>
+                            <button onclick="openAddProductModal()" class="w-full bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 py-2 rounded-lg text-xs font-bold transition-all mb-4 flex items-center justify-center gap-1.5">
+                                <i data-lucide="plus" class="h-4 w-4"></i> Add New Product
+                            </button>
+
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">My Current Listings</h4>
+                            <div id="myListingsContainer" class="space-y-3">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- General Security Info Card -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-left">
+                            <h3 class="font-bold text-siyandaDarkGrey mb-2 flex items-center gap-1.5"><i data-lucide="lock" class="h-4 w-4 text-blue-500"></i> Trust & Security</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                We utilize secure South African gateways and support localized banking mechanisms including FNB eWallet, Standard Bank Instant Money, and traditional EFT matching. Never share your passwords or OTP secrets.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: ADMIN PORTAL -->
+        <section id="section-admin" class="page-view hidden py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Welcome bar -->
+                <div class="bg-siyandaDarkGrey text-white p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+                    <div class="text-left">
+                        <span class="bg-slate-700 border border-slate-600 text-[10px] px-2.5 py-1 rounded-full uppercase font-bold text-slate-300">Central Audit Portal</span>
+                        <h1 class="text-2xl sm:text-3xl font-black mt-1">Admin Control Panel</h1>
+                        <p class="text-slate-300 text-xs">Manage system verifications, audit listings, and review platform telemetry logs.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg text-center min-w-[100px]">
+                            <span class="block text-xs text-slate-400">Pending Docs</span>
+                            <span id="statPendingCount" class="text-lg font-black text-amber-400">0</span>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 p-3 rounded-lg text-center min-w-[100px]">
+                            <span class="block text-xs text-slate-400">Total Items</span>
+                            <span id="statItemsCount" class="text-lg font-black text-siyandaOrange">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left Sidebar Nav -->
+                    <div class="lg:col-span-3 space-y-2">
+                        <button onclick="changeAdminTab('verifications')" id="adminTabBtn-verifications" class="w-full text-left bg-siyandaOrange text-white font-bold px-4 py-3 rounded-lg text-sm transition-all flex items-center justify-between">
+                            <span class="flex items-center gap-2"><i data-lucide="shield-check" class="h-4 w-4"></i> Verify Sellers</span>
+                            <span id="verificationBadgeCount" class="bg-white text-siyandaOrange text-[11px] font-black h-5 w-5 rounded-full flex items-center justify-center shadow">0</span>
+                        </button>
+                        <button onclick="changeAdminTab('products')" id="adminTabBtn-products" class="w-full text-left bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-3 rounded-lg text-sm transition-all flex items-center gap-2">
+                            <i data-lucide="layers" class="h-4 w-4 text-slate-500"></i> Manage Listings
+                        </button>
+                        <button onclick="changeAdminTab('auditing')" id="adminTabBtn-auditing" class="w-full text-left bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-3 rounded-lg text-sm transition-all flex items-center gap-2">
+                            <i data-lucide="terminal" class="h-4 w-4 text-slate-500"></i> Audit Action Logs
+                        </button>
+                    </div>
+
+                    <!-- Right Main Work Area -->
+                    <div class="lg:col-span-9 bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-left">
+                        
+                        <!-- TAB A: VERIFICATION QUEUE -->
+                        <div id="adminTab-verifications" class="admin-tab space-y-6">
+                            <div>
+                                <h2 class="text-lg font-black text-siyandaDarkGrey">Pending Verification Queue</h2>
+                                <p class="text-xs text-slate-500">Review uploaded national identification details, run security compliance checks, and grant trust badges.</p>
+                            </div>
+
+                            <div id="noVerificationsPendingState" class="hidden text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-lg">
+                                <i data-lucide="check-circle" class="h-10 w-10 text-siyandaAccentGreen mx-auto mb-2"></i>
+                                <p class="text-slate-600 font-bold text-sm">Verification Queue Empty</p>
+                                <p class="text-xs text-slate-400 mt-1">All township entrepreneurs have been evaluated and audited.</p>
+                            </div>
+
+                            <div class="space-y-4" id="verificationQueueList">
+                                <!-- Dynamic Pending Verification Entries -->
+                            </div>
+                        </div>
+
+                        <!-- TAB B: PRODUCT MANAGEMENT -->
+                        <div id="adminTab-products" class="admin-tab hidden space-y-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div class="text-left">
+                                    <h2 class="text-lg font-black text-siyandaDarkGrey">Manage Platform Catalog</h2>
+                                    <p class="text-xs text-slate-500">Audit, edit, or delete live public products and control pricing standards.</p>
+                                </div>
+                                <button onclick="openAddProductModal()" class="bg-siyandaOrange hover:bg-siyandaOrangeHover text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1">
+                                    <i data-lucide="plus" class="h-4 w-4"></i> Add Product
+                                </button>
+                            </div>
+
+                            <!-- Product Table View -->
+                            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead>
+                                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 font-bold tracking-wider uppercase">
+                                            <th class="p-3">Product</th>
+                                            <th class="p-3">Category</th>
+                                            <th class="p-3">Price</th>
+                                            <th class="p-3">Seller</th>
+                                            <th class="p-3 text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminProductsTableBody">
+                                        <!-- Dynamic entries -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB C: ACTION AUDIT LOG -->
+                        <div id="adminTab-auditing" class="admin-tab hidden space-y-6">
+                            <div>
+                                <h2 class="text-lg font-black text-siyandaDarkGrey">System Action Ledger</h2>
+                                <p class="text-xs text-slate-500">Real-time immutable security logs of administrative approvals, listings modifications, and platform events.</p>
+                            </div>
+
+                            <div class="bg-slate-950 text-emerald-400 font-mono text-[11px] p-4 rounded-lg overflow-y-auto max-h-[400px] border border-slate-800 shadow-inner">
+                                <div class="border-b border-emerald-950 pb-2 mb-2 flex justify-between items-center text-slate-500 text-[10px]">
+                                    <span>TIMESTAMP & ACTION_LOGGER_SERVICE</span>
+                                    <span>STATUS: OK</span>
+                                </div>
+                                <div id="auditLogEntries" class="space-y-1.5">
+                                    <!-- Log rows -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-siyandaDarkGrey text-white py-12 border-t border-slate-800 text-left mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-8">
+            <div class="md:col-span-5 space-y-4">
+                <div class="flex items-center gap-2">
+                    <div class="bg-siyandaOrange text-white p-1.5 rounded flex items-center justify-center font-black">
+                        <i data-lucide="shopping-bag" class="h-4 w-4"></i>
+                    </div>
+                    <span class="text-lg font-bold tracking-tight text-white">Siyanda<span class="text-siyandaOrange">Market</span></span>
+                </div>
+                <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+                    Connecting township entrepreneurs to buyers across South Africa. Safe transactions, localized support networks, and streamlined parcel logistics in your community.
+                </p>
+            </div>
+            
+            <div class="md:col-span-3 space-y-3">
+                <h4 class="text-sm font-bold uppercase tracking-wider text-siyandaOrange">Quick Navigation</h4>
+                <ul class="text-xs text-slate-400 space-y-2">
+                    <li><button onclick="navigateTo('home')" class="hover:text-white transition-colors">Home Page</button></li>
+                    <li><button onclick="navigateTo('marketplace')" class="hover:text-white transition-colors">The Marketplace</button></li>
+                    <li><button onclick="navigateTo('profile')" class="hover:text-white transition-colors">Seller Verification</button></li>
+                    <li><button onclick="navigateTo('admin')" class="hover:text-white transition-colors">Admin Dashboard</button></li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-4 space-y-3">
+                <h4 class="text-sm font-bold uppercase tracking-wider text-siyandaOrange">Safety & Compliance</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Identity documents are processed and securely matched matching national credit bureau guidelines. Learn more in our Privacy Policy.
+                </p>
+                <div class="flex items-center gap-4 text-xs pt-1">
+                    <a href="#" class="text-slate-400 hover:text-white underline decoration-dotted">Privacy</a>
+                    <a href="#" class="text-slate-400 hover:text-white underline decoration-dotted">Terms of Use</a>
+                    <a href="#" class="text-slate-400 hover:text-white underline decoration-dotted">Contact Support</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+            <p>Copyright &copy; 2026 Siyanda Market. All rights reserved.</p>
+            <p>Designed and Built for Township Empowerment in Gauteng, South Africa.</p>
+        </div>
+    </footer>
+
+    <!-- MODAL CONTAINER: DYNAMIC PRODUCT DETAILS + CHECKOUT (checkout.php simulation) -->
+    <div id="productDetailModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:grid md:grid-cols-12 text-left relative">
+            <button onclick="closeProductModal()" class="absolute right-4 top-4 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 p-2 rounded-full transition-colors z-10">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+
+            <!-- Product Gallery (Left) -->
+            <div class="md:col-span-5 bg-slate-100 p-6 flex flex-col justify-between items-center relative min-h-[300px]">
+                <div class="my-auto text-center w-full">
+                    <span id="modalProductIcon" class="text-8xl block mb-4">🎨</span>
+                    <span id="modalCategoryBadge" class="bg-siyandaDarkGrey text-white text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-wider">CATEGORY</span>
+                </div>
+                <div class="text-center text-xs text-slate-400 w-full pt-4 border-t border-slate-200">
+                    <i data-lucide="info" class="h-4 w-4 inline mr-1 text-slate-500"></i> Interactive 3D view simulated
+                </div>
+            </div>
+
+            <!-- Product Info & Payment Gateway Checkout (Right) -->
+            <div class="md:col-span-7 p-8 flex flex-col justify-between overflow-y-auto max-h-[90vh]">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 justify-between">
+                        <span id="modalSellerBadge" class="bg-siyandaAccentGreen/10 text-siyandaAccentGreen border border-siyandaAccentGreen/20 text-xs px-2.5 py-1 rounded-full flex items-center gap-1 font-bold">
+                            <i data-lucide="check-circle" class="h-3 w-3"></i> Verified Local Seller
+                        </span>
+                        <span class="text-xs text-slate-400 flex items-center gap-1"><i data-lucide="package" class="h-3.5 w-3.5"></i> Stock: In stock</span>
+                    </div>
+
+                    <h2 id="modalProductTitle" class="text-3xl font-black text-siyandaDarkGrey">Woven Shweshwe Dress</h2>
+                    <p id="modalSellerName" class="text-xs text-slate-500 font-semibold">Listed by: <span class="text-slate-800 font-bold">Thandi Mthembu</span></p>
+
+                    <div class="py-2">
+                        <span class="text-xs text-slate-400 block uppercase tracking-wider font-semibold">Total Price (ZAR)</span>
+                        <span id="modalProductPrice" class="text-3xl font-black text-siyandaOrange">R 450.00</span>
+                    </div>
+
+                    <div class="border-t border-b border-slate-100 py-3">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Item Description</h4>
+                        <p id="modalProductDesc" class="text-slate-600 text-sm leading-relaxed">
+                            Handcrafted using premium quality material, with gorgeous original patterns perfect for community gatherings and formal events.
+                        </p>
+                    </div>
+
+                    <!-- Payment Flow Selection Panel -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs">
+                        <h4 class="font-bold text-siyandaDarkGrey mb-2 flex items-center gap-1">
+                            <i data-lucide="shield-alert" class="h-4 w-4 text-siyandaAccentGreen"></i> Siyanda Secure Escrow
+                        </h4>
+                        <p class="text-slate-500 mb-3 leading-relaxed">Funds are only released once you accept physical delivery of the correct goods from local courier hubs.</p>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="selectPaymentMethod('eft')" id="payMethod-eft" class="payment-method-btn border-2 border-siyandaOrange bg-amber-50 text-slate-800 p-2.5 rounded-lg font-bold flex flex-col items-center gap-1 transition-all">
+                                <span>🏦 EFT Payment</span>
+                                <span class="text-[9px] text-slate-500 font-medium">Capitec, FNB, Nedbank</span>
+                            </button>
+                            <button onclick="selectPaymentMethod('voucher')" id="payMethod-voucher" class="payment-method-btn border border-slate-200 hover:bg-slate-100 text-slate-800 p-2.5 rounded-lg font-bold flex flex-col items-center gap-1 transition-all">
+                                <span>📱 Cash Voucher</span>
+                                <span class="text-[9px] text-slate-500 font-medium">Standard Bank, Absa, OTT</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between gap-4">
+                    <button onclick="closeProductModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all">
+                        Back to Shop
+                    </button>
+                    <button onclick="processSimulatedPayment()" class="flex-1 bg-siyandaOrange hover:bg-siyandaOrangeHover text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow transition-all text-center">
+                        Secure Purchase
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONTAINER: ADD/EDIT PRODUCT (Interactive Inventory Sandbox) -->
+    <div id="addProductModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden text-left relative">
+            <button onclick="closeAddProductModal()" class="absolute right-4 top-4 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 p-2 rounded-full transition-colors z-10">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+
+            <form id="productForm" onsubmit="handleProductSubmit(event)" class="p-6 space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <h3 id="productFormTitle" class="text-xl font-black text-siyandaDarkGrey">Add Product</h3>
+                    <p class="text-xs text-slate-400">List an item in the public market catalog.</p>
+                </div>
+
+                <!-- Hidden inputs for tracking -->
+                <input type="hidden" id="editProductId" value="">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="prodTitle">Product Name</label>
+                    <input type="text" id="prodTitle" required placeholder="e.g. Traditional Bead Necklaces" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="prodCategory">Category</label>
+                        <select id="prodCategory" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all">
+                            <option value="Crafts">Art & Crafts</option>
+                            <option value="Clothing">Fashion</option>
+                            <option value="Food">Food & Spices</option>
+                            <option value="Home">Home Décor</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="prodPrice">Price (Rands)</label>
+                        <input type="number" id="prodPrice" required min="1" placeholder="R 150" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="prodEmoji">Visual Emoji Asset</label>
+                    <select id="prodEmoji" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all">
+                        <option value="🎨">🎨 Craft Art Outline</option>
+                        <option value="👚">👚 Shweshwe Fashion</option>
+                        <option value="🏺">🏺 Handcrafted Clay Pot</option>
+                        <option value="🌶️">🌶️ Local Atchar Spices</option>
+                        <option value="👡">👡 Handmade Sandals</option>
+                        <option value="🍞">🍞 Homemade Scones / Bread</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="prodDesc">Short Description</label>
+                    <textarea id="prodDesc" rows="3" required placeholder="Brief description to display in the marketplace catalog..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-siyandaOrange focus:bg-white outline-none transition-all"></textarea>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-[11px] text-amber-800 flex gap-2">
+                    <i data-lucide="info" class="h-4 w-4 shrink-0 text-amber-600 mt-0.5"></i>
+                    <p>New listings from unverified sellers will initially render with standard Trust warning labels until ID audit validation is completed.</p>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeAddProductModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-semibold transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-siyandaOrange hover:bg-siyandaOrangeHover text-white px-5 py-2 rounded-lg text-xs font-bold shadow transition-all">
+                        Publish Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC & STATE ENGINE -->
+    <script>
+        // Seed database for local mock transactions
+        const DEFAULT_PRODUCTS = [
+            {
+                id: 'prod-1',
+                title: 'Hand-Woven Soweto Grass Baskets',
+                category: 'Crafts',
+                price: 240,
+                desc: 'Gorgeous, heavy duty organic woven storage basket crafted by local weavers in Orlando East. Highly sustainable and fits modern living rooms.',
+                seller: 'Sipho Baskets',
+                verified: true,
+                emoji: '🏺'
+            },
+            {
+                id: 'prod-2',
+                title: 'Original Shweshwe Print Dress',
+                category: 'Clothing',
+                price: 650,
+                desc: 'Perfectly patterned Shweshwe formal wrap dress tailored in Tembisa. Intricate visual detailing and very comfortable breathable material.',
+                seller: 'Naledi Makhanya',
+                verified: true,
+                emoji: '👚'
+            },
+            {
+                id: 'prod-3',
+                title: 'Spiced Alexandrian Chili Atchar',
+                category: 'Food',
+                price: 85,
+                desc: 'Locally formulated spicy green mango atchar using secret spice blends passed down generationally. Mild heat and full of fresh aroma.',
+                seller: 'Mama Joy Spices',
+                verified: false,
+                emoji: '🌶️'
+            },
+            {
+                id: 'prod-4',
+                title: 'Beaded Zulu Ceremony Necklaces',
+                category: 'Crafts',
+                price: 180,
+                desc: 'Authentic ceremonial beaded neck loops handmade with high-precision bead weaving in Katlehong. Highly vibrant traditional patterns.',
+                seller: 'Sindi Beadwork',
+                verified: true,
+                emoji: '🎨'
+            },
+            {
+                id: 'prod-5',
+                title: 'Handmade Genuine Leather Sandals',
+                category: 'Clothing',
+                price: 320,
+                desc: 'Extremely durable, stylish, and stitched perfectly for everyday outdoor walking. Sourced from high quality local materials.',
+                seller: 'Katlehong Leathers',
+                verified: false,
+                emoji: '👡'
+            },
+            {
+                id: 'prod-6',
+                title: 'African Clay Flower Pots',
+                category: 'Home',
+                price: 150,
+                desc: 'Beautifully decorated organic terra cotta clay pots perfect for small shrubs and modern indoor succulent plants.',
+                seller: 'Tembisa Pottery',
+                verified: true,
+                emoji: '🏺'
+            }
+        ];
+
+        const DEFAULT_VERIFICATIONS = [
+            {
+                id: 'ver-101',
+                fullname: 'Thandi Mthembu',
+                idNumber: '8910045543085',
+                notes: 'I make traditional wooden utensils and clay cookware out of Diepsloot.',
+                fileName: 'thandi_mthembu_id.pdf',
+                status: 'pending',
+                date: '2026-06-08'
+            },
+            {
+                id: 'ver-102',
+                fullname: 'Lungelo Kunene',
+                idNumber: '9211056502081',
+                notes: 'Handmade leather wallets and laptop covers crafted in Sebokeng township.',
+                fileName: 'kunene_leather_card.jpg',
+                status: 'pending',
+                date: '2026-06-07'
+            }
+        ];
+
+        // Global State Manager
+        let products = [...DEFAULT_PRODUCTS];
+        let verifications = [...DEFAULT_VERIFICATIONS];
+        let currentRole = 'buyer'; // 'buyer' | 'seller' | 'admin'
+        let currentView = 'home'; // 'home' | 'marketplace' | 'profile' | 'admin'
+        let isAuthenticated = false;
+        let selectedPaymentMethodVal = 'eft';
+        let currentBrowsingProduct = null;
+        let lastActionLogs = [
+            { time: "21:30:04", text: "Database Service Initialized." },
+            { time: "21:35:10", text: "Buyer accessed checkout.php endpoint safely." }
+        ];
+
+        // Seller Specific variables
+        let sellerIdentityStatus = 'unverified'; // 'unverified' | 'pending' | 'verified'
+
+        // On document load setup
+        window.addEventListener('DOMContentLoaded', () => {
+            // Render basic UI
+            renderFeaturedProducts();
+            renderMarketplace();
+            updateRoleBasedHeader();
+            renderVerificationsQueue();
+            renderAdminProductsTable();
+            renderAuditLogs();
+            lucide.createIcons();
+        });
+
+        // NOTIFICATION SERVICE
+        function triggerQuickNotice(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 p-4 rounded-xl shadow-lg border text-sm pointer-events-auto transform hover:scale-102 transition-transform bg-white ${
+                type === 'success' ? 'border-emerald-200 text-emerald-800' : 
+                type === 'error' ? 'border-red-200 text-red-800' : 'border-amber-200 text-amber-800'
+            }`;
+            
+            let iconMarkup = '<span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>';
+            if (type === 'success') {
+                iconMarkup = '<span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>';
+            } else if (type === 'error') {
+                iconMarkup = '<span class="h-2 w-2 rounded-full bg-red-500"></span>';
+            }
+
+            toast.innerHTML = `
+                ${iconMarkup}
+                <div class="flex-1">${message}</div>
+                <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-700 ml-2 font-bold">&times;</button>
+            `;
+            
+            const container = document.getElementById('toastContainer');
+            container.appendChild(toast);
+            
+            // Log action to audit ledger
+            logAuditAction(`Toast broadcast: "${message}"`);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => toast.remove(), 300);
+            }, 6000);
+        }
+
+        function logAuditAction(text) {
+            const timeStr = new Date().toTimeString().split(' ')[0];
+            lastActionLogs.unshift({ time: timeStr, text: text });
+            renderAuditLogs();
+        }
+
+        // VIEW & COMPONENT SWITCHING ENGINE
+        function navigateTo(targetView) {
+            currentView = targetView;
+            
+            // Toggle active classes on visual views
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.add('hidden');
+            });
+            document.getElementById(`section-${targetView}`).classList.remove('hidden');
+
+            // Reset specific layouts if needed
+            if (targetView === 'marketplace') {
+                applyMarketFilters();
+            }
+
+            // Sync menu border styling for Desktop
+            const links = ['home', 'marketplace', 'profile', 'admin'];
+            links.forEach(l => {
+                const navLink = document.getElementById(`nav-${l}`);
+                if (navLink) {
+                    if (l === targetView) {
+                        navLink.className = "text-siyandaOrange hover:text-siyandaOrange transition-colors py-2 border-b-2 border-siyandaOrange font-bold text-sm";
+                    } else {
+                        navLink.className = "hover:text-siyandaOrange text-slate-300 transition-colors py-2 border-b-2 border-transparent text-sm";
+                    }
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            logAuditAction(`Mapsd to view: ${targetView}`);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // ROLE SWAPPER SIMULATOR
+        function changeRole(role) {
+            currentRole = role;
+            
+            if (role === 'buyer') {
+                isAuthenticated = false;
+                document.getElementById('headerUserName').innerText = "Guest Buyer";
+                document.getElementById('mobileUserName').innerText = "Guest Buyer";
+                document.getElementById('profileNameDisplay').innerText = "Guest Buyer";
+                document.getElementById('profileEmailDisplay').innerText = "No email linked";
+                document.getElementById('profileRoleDisplay').innerText = "Unverified Buyer";
+                document.getElementById('profileStatusBadge').className = "inline-flex self-center items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700";
+                document.getElementById('profileStatusBadge').innerText = "Unverified Buyer";
+                
+                // Hide dynamic admin tabs from general client views
+                document.getElementById('nav-admin').classList.add('hidden');
+                document.getElementById('mobileNavAdmin').classList.add('hidden');
+            } 
+            else if (role === 'seller') {
+                isAuthenticated = true;
+                document.getElementById('headerUserName').innerText = "Naledi M. (Seller)";
+                document.getElementById('mobileUserName').innerText = "Naledi Makhanya";
+                document.getElementById('profileNameDisplay').innerText = "Naledi Makhanya";
+                document.getElementById('profileEmailDisplay').innerText = "naledi@tembisafashion.co.za";
+                document.getElementById('profileRoleDisplay').innerText = "Township Entrepreneur";
+                document.getElementById('profileStatusBadge').className = "inline-flex self-center items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-siyandaAccentGreen border border-emerald-200";
+                document.getElementById('profileStatusBadge').innerHTML = "<i data-lucide='check' class='h-3 w-3 mr-1'></i> Verified Seller";
+                
+                // Set mock local store verified state
+                sellerIdentityStatus = 'verified';
+                updateSellerVerificationUI();
+                
+                document.getElementById('nav-admin').classList.add('hidden');
+                document.getElementById('mobileNavAdmin').classList.add('hidden');
+            } 
+            else if (role === 'admin') {
+                isAuthenticated = true;
+                document.getElementById('headerUserName').innerText = "Root Admin System";
+                document.getElementById('mobileUserName').innerText = "Platform Auditor";
+                document.getElementById('profileNameDisplay').innerText = "Administrator (Auditor)";
+                document.getElementById('profileEmailDisplay').innerText = "compliance@siyandamarket.co.za";
+                document.getElementById('profileRoleDisplay').innerText = "Risk and Verification Lead";
+                document.getElementById('profileStatusBadge').className = "inline-flex self-center items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200";
+                document.getElementById('profileStatusBadge').innerText = "Platform Administrator";
+                
+                // Reveal admin pathways
+                document.getElementById('nav-admin').classList.remove('hidden');
+                document.getElementById('mobileNavAdmin').classList.remove('hidden');
+            }
+
+            updateRoleBasedHeader();
+            updateListingsForActiveSeller();
+            triggerQuickNotice(`Switched simulated context to ${role.toUpperCase()}`, 'success');
+            lucide.createIcons();
+        }
+
+        function updateRoleBasedHeader() {
+            const authBtn = document.getElementById('authBtn');
+            const mobileAuthBtn = document.getElementById('mobileAuthBtn');
+
+            if (isAuthenticated) {
+                authBtn.innerText = "Logout";
+                mobileAuthBtn.innerText = "Logout";
+                document.getElementById('headerUserIndicator').className = "h-2 w-2 rounded-full bg-siyandaAccentGreen";
+                document.getElementById('mobileUserIndicator').className = "h-2 w-2 rounded-full bg-siyandaAccentGreen";
+            } else {
+                authBtn.innerText = "Login / Register";
+                mobileAuthBtn.innerText = "Login / Register";
+                document.getElementById('headerUserIndicator').className = "h-2 w-2 rounded-full bg-slate-400";
+                document.getElementById('mobileUserIndicator').className = "h-2 w-2 rounded-full bg-slate-400";
+            }
+        }
+
+        function toggleAuth() {
+            if (isAuthenticated) {
+                // Logout flow simulation
+                isAuthenticated = false;
+                changeRole('buyer');
+                document.getElementById('roleSelector').value = 'buyer';
+                triggerQuickNotice('Successfully logged out of Siyanda Market session.', 'info');
+                navigateTo('home');
+            } else {
+                // Login flow simulation
+                isAuthenticated = true;
+                changeRole('seller');
+                document.getElementById('roleSelector').value = 'seller';
+                triggerQuickNotice('Logged in securely as Naledi Makhanya (Verified Seller).', 'success');
+                navigateTo('profile');
+            }
+        }
+
+        function simulateSellerOnboarding() {
+            isAuthenticated = true;
+            changeRole('seller');
+            document.getElementById('roleSelector').value = 'seller';
+            sellerIdentityStatus = 'unverified';
+            updateSellerVerificationUI();
+            navigateTo('profile');
+            triggerQuickNotice('We activated the Seller Setup screen. Please fill in your verification details below.', 'info');
+        }
+
+        // SELLER REGISTRATION & ID UPLOAD FLOW SIMULATOR
+        function handleFileChange(event) {
+            const input = event.target;
+            const display = document.getElementById('fileNameDisplay');
+            if (input.files && input.files.length > 0) {
+                display.innerText = `📎 ${input.files[0].name} successfully attached`;
+                display.className = "text-xs font-bold text-siyandaAccentGreen";
+                triggerQuickNotice(`Ready to secure upload: ${input.files[0].name}`, 'info');
+            }
+        }
+
+        function handleVerificationSubmit(e) {
+            e.preventDefault();
+            const fullNameInput = document.getElementById('docFullname').value;
+            const idNumberInput = document.getElementById('docIdNumber').value;
+            const bioInput = document.getElementById('docNotes').value;
+            const fileInput = document.getElementById('docFile');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                triggerQuickNotice('Please select an Identity document image/PDF file to upload.', 'error');
+                return;
+            }
+
+            const mockFileName = fileInput.files[0].name;
+
+            // Push simulated request into verification audit table
+            const newVerification = {
+                id: 'ver-' + Math.floor(Math.random() * 900 + 100),
+                fullname: fullNameInput,
+                idNumber: idNumberInput,
+                notes: bioInput,
+                fileName: mockFileName,
+                status: 'pending',
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            verifications.unshift(newVerification);
+            sellerIdentityStatus = 'pending';
+            
+            updateSellerVerificationUI();
+            renderVerificationsQueue();
+            
+            logAuditAction(`Seller ID Document Upload: ${fullNameInput} (ID: ${idNumberInput})`);
+            triggerQuickNotice('Identity verification sent securely to platform risk managers.', 'success');
+        }
+
+        function updateSellerVerificationUI() {
+            const stateBlock = document.getElementById('verificationStateBlock');
+            const statusBadgeValue = document.getElementById('profileStatusBadgeValue');
+            const progressTracker = document.getElementById('profileProgressTracker');
+            const statusMessage = document.getElementById('profileStatusMessage');
+
+            if (sellerIdentityStatus === 'unverified') {
+                statusBadgeValue.innerText = "NOT SUBMITTED";
+                statusBadgeValue.className = "font-bold uppercase text-slate-500";
+                progressTracker.style.width = "20%";
+                progressTracker.className = "bg-slate-400 h-2 rounded-full";
+                statusMessage.innerHTML = "Upload legal identification and proof of township residency to gain your Trusted Seller green badge.";
+            } 
+            else if (sellerIdentityStatus === 'pending') {
+                statusBadgeValue.innerText = "PENDING COMPLIANCE CHECK";
+                statusBadgeValue.className = "font-bold uppercase text-amber-500 animate-pulse";
+                progressTracker.style.width = "65%";
+                progressTracker.className = "bg-amber-400 h-2 rounded-full";
+                statusMessage.innerHTML = "Your papers are currently in the audit queue. An admin will verify your identity. Check the Admin Portal to simulate immediate approval.";
+            } 
+            else if (sellerIdentityStatus === 'verified') {
+                statusBadgeValue.innerText = "VERIFIED TRUSTED SELLER";
+                statusBadgeValue.className = "font-bold uppercase text-siyandaAccentGreen";
+                progressTracker.style.width = "100%";
+                progressTracker.className = "bg-siyandaAccentGreen h-2 rounded-full";
+                statusMessage.innerHTML = "Identity confirmed. A green Trust checkmark badge is visible near your name in the marketplace.";
+            }
+        }
+
+
+        // PRODUCT RENDERING ENGINE
+        function renderFeaturedProducts() {
+            const grid = document.getElementById('homepage-featured-grid');
+            grid.innerHTML = '';
+            
+            // Grab the first 3 items to feature
+            const featuredList = products.slice(0, 3);
+            
+            featuredList.forEach(item => {
+                grid.innerHTML += createProductCardHTML(item, false);
+            });
+        }
+
+        function renderMarketplace() {
+            const grid = document.getElementById('marketplace-grid');
+            grid.innerHTML = '';
+            
+            products.forEach(item => {
+                grid.innerHTML += createProductCardHTML(item, true);
+            });
+
+            document.getElementById('displayedProductsCount').innerText = products.length;
+        }
+
+        function createProductCardHTML(item, showBuyNowButton = true) {
+            const verifiedBadgeHTML = item.verified 
+                ? `<span class="inline-flex items-center bg-siyandaAccentGreen/10 text-siyandaAccentGreen text-[10px] font-bold px-2 py-0.5 rounded-full border border-siyandaAccentGreen/25">
+                     <i data-lucide="check" class="h-2.5 w-2.5 mr-0.5"></i> Verified Seller
+                   </span>`
+                : `<span class="inline-flex items-center bg-slate-100 text-slate-500 text-[10px] font-medium px-2 py-0.5 rounded-full border border-slate-200">
+                     <i data-lucide="alert-circle" class="h-2.5 w-2.5 mr-0.5"></i> Pending Audit
+                   </span>`;
+
+            return `
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between text-left h-full">
+                    <div class="p-4 bg-slate-50/60 flex items-center justify-center relative min-h-[160px] border-b border-slate-100">
+                        <span class="text-6xl select-none">${item.emoji || '📦'}</span>
+                        <span class="absolute top-3 right-3 bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded font-extrabold uppercase tracking-wider">${item.category}</span>
+                    </div>
+                    
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <span class="text-xs text-slate-400 font-semibold flex items-center gap-1">
+                                    <i data-lucide="user" class="h-3 w-3"></i> ${item.seller}
+                                </span>
+                                ${verifiedBadgeHTML}
+                            </div>
+                            <h3 class="text-base font-black text-siyandaDarkGrey line-clamp-1">${item.title}</h3>
+                            <p class="text-slate-500 text-xs line-clamp-2 leading-relaxed">${item.desc}</p>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Price</span>
+                                <span class="text-lg font-black text-siyandaOrange">R ${item.price}</span>
+                            </div>
+                            ${showBuyNowButton ? `
+                                <button onclick="openProductModal('${item.id}')" class="bg-siyandaOrange hover:bg-siyandaOrangeHover text-white text-xs font-bold py-2 px-3.5 rounded-lg shadow-sm transition-all flex items-center gap-1 active:scale-95">
+                                    Buy Now <i data-lucide="arrow-right" class="h-3 w-3"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // MARKETPLACE SEARCH, CATEGORY, & VERIFIED SORT LOGIC
+        function applyMarketFilters() {
+            const searchQuery = document.getElementById('marketSearch').value.toLowerCase();
+            const categoryValue = document.getElementById('marketCategory').value;
+            const onlyVerified = document.getElementById('verifiedToggle').checked;
+            const sortOrder = document.getElementById('marketSort').value;
+
+            let filtered = [...products];
+
+            // Filter by search terms
+            if (searchQuery) {
+                filtered = filtered.filter(item => 
+                    item.title.toLowerCase().includes(searchQuery) || 
+                    item.desc.toLowerCase().includes(searchQuery) ||
+                    item.seller.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            // Filter by category selection
+            if (categoryValue !== 'all') {
+                filtered = filtered.filter(item => item.category === categoryValue);
+            }
+
+            // Filter only verified sellers
+            if (onlyVerified) {
+                filtered = filtered.filter(item => item.verified === true);
+            }
+
+            // Apply sorting rules
+            if (sortOrder === 'price-low') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sortOrder === 'price-high') {
+                filtered.sort((a, b) => b.price - a.price);
+            }
+
+            // Render output
+            const grid = document.getElementById('marketplace-grid');
+            const zeroState = document.getElementById('noProductsFoundState');
+            
+            grid.innerHTML = '';
+            
+            if (filtered.length === 0) {
+                zeroState.classList.remove('hidden');
+                document.getElementById('displayedProductsCount').innerText = 0;
+            } else {
+                zeroState.classList.add('hidden');
+                filtered.forEach(item => {
+                    grid.innerHTML += createProductCardHTML(item, true);
+                });
+                document.getElementById('displayedProductsCount').innerText = filtered.length;
+            }
+
+            lucide.createIcons();
+        }
+
+        function resetFilters() {
+            document.getElementById('marketSearch').value = '';
+            document.getElementById('marketCategory').value = 'all';
+            document.getElementById('verifiedToggle').checked = false;
+            document.getElementById('marketSort').value = 'default';
+            applyMarketFilters();
+            triggerQuickNotice('Filters have been successfully restored to default values.', 'info');
+        }
+
+
+        // PRODUCT DETAIL & PAYMENT GATEWAY FLOWS (checkout.php)
+        function openProductModal(productId) {
+            const item = products.find(p => p.id === productId);
+            if (!item) return;
+
+            currentBrowsingProduct = item;
+
+            // Populate Modal Content
+            document.getElementById('modalProductTitle').innerText = item.title;
+            document.getElementById('modalProductPrice').innerText = `R ${item.price}.00`;
+            document.getElementById('modalProductDesc').innerText = item.desc;
+            document.getElementById('modalSellerName').innerHTML = `Listed by: <span class="text-slate-800 font-bold">${item.seller}</span>`;
+            document.getElementById('modalProductIcon').innerText = item.emoji || '📦';
+            document.getElementById('modalCategoryBadge').innerText = item.category;
+
+            const badgeContainer = document.getElementById('modalSellerBadge');
+            if (item.verified) {
+                badgeContainer.innerHTML = `<i data-lucide="check-circle" class="h-3.5 w-3.5 text-siyandaAccentGreen"></i> Verified Trusted Seller`;
+                badgeContainer.className = "bg-siyandaAccentGreen/10 text-siyandaAccentGreen border border-siyandaAccentGreen/25 text-xs px-2.5 py-1 rounded-full flex items-center gap-1 font-bold";
+            } else {
+                badgeContainer.innerHTML = `<i data-lucide="alert-triangle" class="h-3.5 w-3.5 text-amber-600"></i> Pending ID Audit`;
+                badgeContainer.className = "bg-amber-50 text-amber-800 border border-amber-200 text-xs px-2.5 py-1 rounded-full flex items-center gap-1 font-semibold";
+            }
+
+            // Defaults payment option
+            selectPaymentMethod('eft');
+
+            // Open Modal
+            document.getElementById('productDetailModal').classList.remove('hidden');
+            logAuditAction(`Accessed checkout validation panel for: ${item.title}`);
+            lucide.createIcons();
+        }
+
+        function closeProductModal() {
+            document.getElementById('productDetailModal').classList.add('hidden');
+            currentBrowsingProduct = null;
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethodVal = method;
+            
+            document.querySelectorAll('.payment-method-btn').forEach(btn => {
+                btn.className = "payment-method-btn border border-slate-200 hover:bg-slate-100 text-slate-800 p-2.5 rounded-lg font-bold flex flex-col items-center gap-1 transition-all";
+            });
+
+            const activeBtn = document.getElementById(`payMethod-${method}`);
+            if (activeBtn) {
+                activeBtn.className = "payment-method-btn border-2 border-siyandaOrange bg-amber-50 text-slate-800 p-2.5 rounded-lg font-bold flex flex-col items-center gap-1 transition-all";
+            }
+        }
+
+        function processSimulatedPayment() {
+            if (!currentBrowsingProduct) return;
+
+            const finalPrice = currentBrowsingProduct.price;
+            const paymentTypeLabel = selectedPaymentMethodVal === 'eft' ? 'Secure Instant EFT' : 'Mobile Cash Code Transfer';
+            
+            // Build modern modal-based checkout notification rather than alerts
+            closeProductModal();
+            
+            logAuditAction(`Initiated Simulated Payment Protocol: ZAR ${finalPrice} via ${paymentTypeLabel}`);
+            
+            // Display processing message, then success message
+            triggerQuickNotice(`Initiating direct gateway to secure ${paymentTypeLabel}...`, 'info');
+            
+            setTimeout(() => {
+                triggerQuickNotice(`Payment Confirmed! R ${finalPrice} locked in escrow. Delivery routing set for township drop point.`, 'success');
+            }, 2500);
+        }
+
+
+        // INVENTORY MANAGEMENT FOR LOGGED IN SELLER
+        function updateListingsForActiveSeller() {
+            const container = document.getElementById('myListingsContainer');
+            container.innerHTML = '';
+
+            // Filter items matching the simulated active user
+            const sellerName = currentRole === 'seller' ? 'Naledi Makhanya' : 'None';
+            const sellerItems = products.filter(p => p.seller === sellerName);
+
+            if (sellerItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-400">
+                        No active product listings. Click 'Add New Product' to start selling.
+                    </div>
+                `;
+                return;
+            }
+
+            sellerItems.forEach(item => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">${item.emoji || '📦'}</span>
+                            <div>
+                                <h4 class="font-bold text-slate-700">${item.title}</h4>
+                                <p class="text-slate-400 font-semibold">R ${item.price} • ${item.category}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <button onclick="editProduct('${item.id}')" class="text-blue-500 hover:text-blue-700 p-1 bg-white hover:bg-slate-100 rounded border border-slate-200 transition-colors">
+                                <i data-lucide="edit" class="h-3 w-3"></i>
+                            </button>
+                            <button onclick="deleteProduct('${item.id}')" class="text-red-500 hover:text-red-700 p-1 bg-white hover:bg-slate-100 rounded border border-slate-200 transition-colors">
+                                <i data-lucide="trash-2" class="h-3 w-3"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            lucide.createIcons();
+        }
+
+        // ADD & EDIT PRODUCT FORM
+        function openAddProductModal() {
+            document.getElementById('productForm').reset();
+            document.getElementById('editProductId').value = '';
+            document.getElementById('productFormTitle').innerText = 'Add Product Listing';
+            document.getElementById('addProductModal').classList.remove('hidden');
+        }
+
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').classList.add('hidden');
+        }
+
+        function handleProductSubmit(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('editProductId').value;
+            const title = document.getElementById('prodTitle').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = parseInt(document.getElementById('prodPrice').value);
+            const emoji = document.getElementById('prodEmoji').value;
+            const desc = document.getElementById('prodDesc').value;
+
+            // Determine active seller identity
+            let sellerName = "Anonymous Seller";
+            let verifiedStatus = false;
+
+            if (currentRole === 'seller') {
+                sellerName = "Naledi Makhanya";
+                verifiedStatus = (sellerIdentityStatus === 'verified');
+            } else if (currentRole === 'admin') {
+                sellerName = "Siyanda Curated Products";
+                verifiedStatus = true;
+            }
+
+            if (editId) {
+                // Update item flow
+                const index = products.findIndex(p => p.id === editId);
+                if (index !== -1) {
+                    products[index].title = title;
+                    products[index].category = category;
+                    products[index].price = price;
+                    products[index].emoji = emoji;
+                    products[index].desc = desc;
+                    
+                    triggerQuickNotice(`Listing "${title}" updated successfully.`, 'success');
+                    logAuditAction(`Product modified: ${title} (ID: ${editId})`);
+                }
+            } else {
+                // Insert item flow
+                const newProduct = {
+                    id: 'prod-' + (products.length + 1) + Math.floor(Math.random() * 10),
+                    title: title,
+                    category: category,
+                    price: price,
+                    desc: desc,
+                    seller: sellerName,
+                    verified: verifiedStatus,
+                    emoji: emoji
+                };
+
+                products.unshift(newProduct);
+                triggerQuickNotice(`New product "${title}" successfully listed in Siyanda Market!`, 'success');
+                logAuditAction(`New Product Listed: ${title} by ${sellerName}`);
+            }
+
+            // Reset view state
+            closeAddProductModal();
+            renderFeaturedProducts();
+            renderMarketplace();
+            updateListingsForActiveSeller();
+            renderAdminProductsTable();
+            
+            // Check count metrics
+            document.getElementById('statItemsCount').innerText = products.length;
+        }
+
+        function editProduct(id) {
+            const item = products.find(p => p.id === id);
+            if (!item) return;
+
+            document.getElementById('editProductId').value = item.id;
+            document.getElementById('prodTitle').value = item.title;
+            document.getElementById('prodCategory').value = item.category;
+            document.getElementById('prodPrice').value = item.price;
+            document.getElementById('prodEmoji').value = item.emoji || '🎨';
+            document.getElementById('prodDesc').value = item.desc;
+
+            document.getElementById('productFormTitle').innerText = 'Modify Product Details';
+            document.getElementById('addProductModal').classList.remove('hidden');
+        }
+
+        function deleteProduct(id) {
+            const item = products.find(p => p.id === id);
+            if (!item) return;
+
+            products = products.filter(p => p.id !== id);
+            triggerQuickNotice(`Product removed from public listings.`, 'info');
+            logAuditAction(`Deleted Product: ${item.title}`);
+
+            renderFeaturedProducts();
+            renderMarketplace();
+            updateListingsForActiveSeller();
+            renderAdminProductsTable();
+
+            document.getElementById('statItemsCount').innerText = products.length;
+        }
+
+
+        // ADMIN PORTAL & AUDIT LOG SERVICES
+        function changeAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
+            document.getElementById(`adminTab-${tabName}`).classList.remove('hidden');
+
+            const tabIds = ['verifications', 'products', 'auditing'];
+            tabIds.forEach(id => {
+                const btn = document.getElementById(`adminTabBtn-${id}`);
+                if (id === tabName) {
+                    btn.className = "w-full text-left bg-siyandaOrange text-white font-bold px-4 py-3 rounded-lg text-sm transition-all flex items-center justify-between";
+                } else {
+                    btn.className = "w-full text-left bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-3 rounded-lg text-sm transition-all flex items-center gap-2";
+                }
+            });
+
+            logAuditAction(`Admin workspace toggled to: ${tabName.toUpperCase()}`);
+        }
+
+        function renderVerificationsQueue() {
+            const container = document.getElementById('verificationQueueList');
+            const zeroState = document.getElementById('noVerificationsPendingState');
+            
+            const pendingList = verifications.filter(v => v.status === 'pending');
+            container.innerHTML = '';
+
+            document.getElementById('statPendingCount').innerText = pendingList.length;
+            document.getElementById('verificationBadgeCount').innerText = pendingList.length;
+
+            if (pendingList.length === 0) {
+                zeroState.classList.remove('hidden');
+                return;
+            }
+
+            zeroState.classList.add('hidden');
+
+            pendingList.forEach(item => {
+                container.innerHTML += `
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2">
+                            <div>
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">National ID Audit</span>
+                                <h4 class="text-sm font-bold text-slate-800 mt-1">${item.fullname}</h4>
+                            </div>
+                            <span class="text-xs text-slate-400 font-mono">Date Filed: ${item.date}</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                            <div class="space-y-1">
+                                <p class="text-slate-400 font-semibold">SA National ID Number</p>
+                                <p class="font-mono text-slate-800">${item.idNumber}</p>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-slate-400 font-semibold">Attached File</p>
+                                <a href="#" onclick="event.preventDefault(); triggerQuickNotice('Security Gateway: File decrypted and verified as malware-free.', 'success')" class="text-siyandaOrange hover:underline font-bold flex items-center gap-1">
+                                    <i data-lucide="file-text" class="h-4 w-4"></i> ${item.fileName}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="text-xs space-y-1 bg-white p-3 border border-slate-200 rounded">
+                            <p class="text-slate-400 font-bold uppercase tracking-wider text-[9px]">Sellers Bio & Notes</p>
+                            <p class="text-slate-600 italic">"${item.notes}"</p>
+                        </div>
+
+                        <!-- Decision actions -->
+                        <div class="pt-2 flex items-center justify-end gap-2">
+                            <button onclick="rejectVerification('${item.id}')" class="bg-white hover:bg-red-50 text-red-600 border border-red-200 text-xs px-4 py-2 rounded-lg font-semibold transition-colors">
+                                Reject Profile
+                            </button>
+                            <button onclick="approveVerification('${item.id}')" class="bg-siyandaAccentGreen hover:bg-green-700 text-white text-xs px-4 py-2 rounded-lg font-bold shadow-sm transition-colors">
+                                Approve & Grant trust Badge
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            lucide.createIcons();
+        }
+
+        function approveVerification(id) {
+            const verificationItem = verifications.find(v => v.id === id);
+            if (!verificationItem) return;
+
+            // Change status
+            verificationItem.status = 'approved';
+            
+            // If it belongs to our active mocked seller, upgrade the profile
+            if (verificationItem.fullname === 'Naledi Makhanya') {
+                sellerIdentityStatus = 'verified';
+                updateSellerVerificationUI();
+                
+                // Update Naledi's products to carry the verified green badge
+                products.forEach(p => {
+                    if (p.seller === 'Naledi Makhanya') {
+                        p.verified = true;
+                    }
+                });
+                renderFeaturedProducts();
+                renderMarketplace();
+            }
+
+            logAuditAction(`Seller Approved: ${verificationItem.fullname} (ID: ${verificationItem.idNumber})`);
+            triggerQuickNotice(`Granted Trusted Seller status to ${verificationItem.fullname}.`, 'success');
+
+            renderVerificationsQueue();
+            updateListingsForActiveSeller();
+        }
+
+        function rejectVerification(id) {
+            const verificationItem = verifications.find(v => v.id === id);
+            if (!verificationItem) return;
+
+            // Simple prompt replacement to avoid blocked default browsers alerts
+            const rejectionReason = "Document scans were too blurry to parse. Please upload high resolution PNG photos.";
+            
+            verificationItem.status = 'rejected';
+
+            if (verificationItem.fullname === 'Naledi Makhanya') {
+                sellerIdentityStatus = 'unverified';
+                updateSellerVerificationUI();
+            }
+
+            logAuditAction(`Seller Rejected: ${verificationItem.fullname}. Reason: ${rejectionReason}`);
+            triggerQuickNotice(`Rejected application for ${verificationItem.fullname}.`, 'error');
+
+            renderVerificationsQueue();
+        }
+
+        function renderAdminProductsTable() {
+            const body = document.getElementById('adminProductsTableBody');
+            body.innerHTML = '';
+
+            document.getElementById('statItemsCount').innerText = products.length;
+
+            products.forEach(item => {
+                body.innerHTML += `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                        <td class="p-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl">${item.emoji || '🎨'}</span>
+                                <span class="font-bold text-slate-800">${item.title}</span>
+                            </div>
+                        </td>
+                        <td class="p-3 text-slate-500">${item.category}</td>
+                        <td class="p-3 font-bold text-siyandaOrange">R ${item.price}</td>
+                        <td class="p-3">
+                            <div class="flex items-center gap-1 text-slate-500">
+                                <span>${item.seller}</span>
+                                ${item.verified ? '<i data-lucide="check-circle" class="h-3 w-3 text-siyandaAccentGreen shrink-0"></i>' : ''}
+                            </div>
+                        </td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="editProduct('${item.id}')" class="text-blue-500 hover:bg-blue-50 p-1 rounded border border-slate-200 transition-colors">
+                                    <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
+                                </button>
+                                <button onclick="deleteProduct('${item.id}')" class="text-red-500 hover:bg-red-50 p-1 rounded border border-slate-200 transition-colors">
+                                    <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            lucide.createIcons();
+        }
+
+        function renderAuditLogs() {
+            const container = document.getElementById('auditLogEntries');
+            container.innerHTML = '';
+
+            lastActionLogs.forEach(log => {
+                container.innerHTML += `
+                    <div class="flex gap-2">
+                        <span class="text-slate-500">[${log.time}]</span>
+                        <span>${log.text}</span>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
