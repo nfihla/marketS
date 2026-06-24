@@ -48,7 +48,6 @@
 </head>
 <body class="min-h-screen flex flex-col text-slate-800">
 
-    <!-- Prototype Mode Switcher (Simulating roles & states) -->
     <div class="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2 text-xs md:text-sm flex flex-wrap justify-between items-center gap-2 z-50">
         <div class="flex items-center gap-2 font-semibold">
             <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
@@ -103,7 +102,8 @@
                         <span id="headerUserIndicator" class="h-2 w-2 rounded-full bg-slate-400"></span>
                         <span id="headerUserName">Guest Buyer</span>
                     </div>
-                    <button id="authBtn" onclick="toggleAuth()" class="bg-transparent hover:bg-slate-800 text-white border border-slate-600 rounded-lg px-4 py-1.5 text-sm font-medium transition-all">
+                    <a id="registerLink" href="register.php" class="text-sm text-slate-300 hover:text-siyandaOrange transition-colors hidden">Register</a>
+                    <button id="authBtn" onclick="handleAuth()" class="bg-transparent hover:bg-slate-800 text-white border border-slate-600 rounded-lg px-4 py-1.5 text-sm font-medium transition-all">
                         Login
                     </button>
                 </div>
@@ -129,7 +129,8 @@
                         <span id="mobileUserIndicator" class="h-2 w-2 rounded-full bg-slate-400"></span>
                         <span id="mobileUserName">Guest Buyer</span>
                     </div>
-                    <button id="mobileAuthBtn" onclick="toggleAuth(); toggleMobileMenu()" class="w-full text-center bg-siyandaOrange hover:bg-siyandaOrangeHover text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    <a id="mobileRegisterLink" href="register.php" class="w-full text-center bg-slate-700 hover:bg-slate-600 text-white font-medium py-2 px-4 rounded-lg transition-colors hidden">Register</a>
+                    <button id="mobileAuthBtn" onclick="handleAuth(); toggleMobileMenu()" class="w-full text-center bg-siyandaOrange hover:bg-siyandaOrangeHover text-white font-medium py-2 px-4 rounded-lg transition-colors">
                         Login
                     </button>
                 </div>
@@ -907,8 +908,50 @@
             renderVerificationsQueue();
             renderAdminProductsTable();
             renderAuditLogs();
+            syncSessionFromServer();
             lucide.createIcons();
         });
+
+        async function syncSessionFromServer() {
+            try {
+                const response = await fetch('auth/session.php');
+                const data = await response.json();
+
+                if (data.logged_in && data.user) {
+                    isAuthenticated = true;
+                    applyLoggedInUser(data.user);
+                } else {
+                    isAuthenticated = false;
+                    updateRoleBasedHeader();
+                }
+            } catch (error) {
+                console.warn('Could not load session state.', error);
+            }
+        }
+
+        function applyLoggedInUser(user) {
+            const displayName = user.full_name || 'Member';
+            const roleLabel = user.role === 'seller' ? 'Seller' : user.role === 'admin' ? 'Admin' : 'Buyer';
+
+            document.getElementById('headerUserName').innerText = displayName;
+            document.getElementById('mobileUserName').innerText = displayName;
+            document.getElementById('profileNameDisplay').innerText = displayName;
+            document.getElementById('profileEmailDisplay').innerText = user.email || 'No email linked';
+            document.getElementById('profileRoleDisplay').innerText = roleLabel;
+            document.getElementById('profileStatusBadge').innerText = roleLabel;
+
+            if (user.role === 'admin') {
+                document.getElementById('nav-admin').classList.remove('hidden');
+                document.getElementById('mobileNavAdmin').classList.remove('hidden');
+            }
+
+            if (user.role === 'seller') {
+                sellerIdentityStatus = 'unverified';
+                updateSellerVerificationUI();
+            }
+
+            updateRoleBasedHeader();
+        }
 
         // NOTIFICATION SERVICE
         function triggerQuickNotice(message, type = 'info') {
@@ -1045,35 +1088,31 @@
         function updateRoleBasedHeader() {
             const authBtn = document.getElementById('authBtn');
             const mobileAuthBtn = document.getElementById('mobileAuthBtn');
+            const registerLink = document.getElementById('registerLink');
+            const mobileRegisterLink = document.getElementById('mobileRegisterLink');
 
             if (isAuthenticated) {
                 authBtn.innerText = "Logout";
                 mobileAuthBtn.innerText = "Logout";
+                registerLink.classList.add('hidden');
+                mobileRegisterLink.classList.add('hidden');
                 document.getElementById('headerUserIndicator').className = "h-2 w-2 rounded-full bg-siyandaAccentGreen";
                 document.getElementById('mobileUserIndicator').className = "h-2 w-2 rounded-full bg-siyandaAccentGreen";
             } else {
-                authBtn.innerText = "Login / Register";
-                mobileAuthBtn.innerText = "Login / Register";
+                authBtn.innerText = "Login";
+                mobileAuthBtn.innerText = "Login";
+                registerLink.classList.remove('hidden');
+                mobileRegisterLink.classList.remove('hidden');
                 document.getElementById('headerUserIndicator').className = "h-2 w-2 rounded-full bg-slate-400";
                 document.getElementById('mobileUserIndicator').className = "h-2 w-2 rounded-full bg-slate-400";
             }
         }
 
-        function toggleAuth() {
+        function handleAuth() {
             if (isAuthenticated) {
-                // Logout flow simulation
-                isAuthenticated = false;
-                changeRole('buyer');
-                document.getElementById('roleSelector').value = 'buyer';
-                triggerQuickNotice('Successfully logged out of Siyanda Market session.', 'info');
-                navigateTo('home');
+                window.location.href = 'logout.php';
             } else {
-                // Login flow simulation
-                isAuthenticated = true;
-                changeRole('seller');
-                document.getElementById('roleSelector').value = 'seller';
-                triggerQuickNotice('Logged in securely as Naledi Makhanya (Verified Seller).', 'success');
-                navigateTo('profile');
+                window.location.href = 'login.php';
             }
         }
 
