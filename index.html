@@ -51,7 +51,7 @@
     <div class="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2 text-xs md:text-sm flex flex-wrap justify-between items-center gap-2 z-50">
         <div class="flex items-center gap-2 font-semibold">
             <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
-            Prototype Controller:
+            Controller:
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <div>
@@ -218,8 +218,8 @@
             <!-- Features Highlights Section -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
-                    <h2 class="text-3xl font-black text-siyandaDarkGrey tracking-tight">Built For Local Success</h2>
-                    <p class="text-slate-600">Siyanda Market breaks down the barriers keeping township businesses from growing beyond geographic borders.</p>
+                    <h2 class="text-3xl font-black text-siyandaDarkGrey tracking-tight">Built For Township Success</h2>
+                    <p class="text-slate-600">We are here to break the barriers keeping township businesses from growing.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -409,7 +409,7 @@
                             </div>
                             
                             <p class="text-slate-600 text-sm mb-4">
-                                To protect our community from fraud and allow direct cash/EFT payouts, sellers must upload their national identity document and proof of township residency.
+                                To protect our community from fraud and allow direct cash/EFT payouts, sellers must upload their national identity document and proof of residency.
                             </p>
 
                             <!-- Live verification state tracker -->
@@ -426,7 +426,7 @@
                                 </div>
                             </div>
 
-                            <!-- Upload Identity Documents Form -->
+                            <!-- Upload Identity Documents -->
                             <form id="verificationForm" onsubmit="handleVerificationSubmit(event)" class="space-y-4">
                                 <div>
                                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="docFullname">Full Legal Name (as on ID)</label>
@@ -442,7 +442,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1" for="docFile">Identity Document (PDF, PNG or JPG)</label>
-                                    <p class="text-[11px] text-slate-400 mb-2">Provide a clear copy of your SA Green Book, Smart ID card, or passport.</p>
+                                    <p class="text-[11px] text-slate-400 mb-2">Provide a clear copy of your SA Green Book, Smart ID card, passport or other valid ID.</p>
                                     <div class="border-2 border-dashed border-slate-200 hover:border-siyandaOrange/50 rounded-lg p-4 text-center cursor-pointer transition-colors relative bg-slate-50">
                                         <input type="file" id="docFile" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileChange(event)">
                                         <div class="space-y-1">
@@ -483,7 +483,7 @@
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-left">
                             <h3 class="font-bold text-siyandaDarkGrey mb-2 flex items-center gap-1.5"><i data-lucide="lock" class="h-4 w-4 text-blue-500"></i> Trust & Security</h3>
                             <p class="text-xs text-slate-600 leading-relaxed">
-                                We utilize secure South African gateways and support localized banking mechanisms including FNB eWallet, Standard Bank Instant Money, and traditional EFT matching. Never share your passwords or OTP secrets.
+                                We utilise secure South African gateways and support localised banking mechanisms including FNB eWallet, Standard Bank Instant Money, and traditional EFT. Never share your passwords or OTP secrets.
                             </p>
                         </div>
                     </div>
@@ -491,7 +491,7 @@
             </div>
         </section>
 
-        <!-- SECTION 4: ADMIN PORTAL -->
+        <!-- ADMIN PORTAL -->
         <section id="section-admin" class="page-view hidden py-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Welcome bar -->
@@ -545,7 +545,7 @@
                             </div>
 
                             <div class="space-y-4" id="verificationQueueList">
-                                <!-- Dynamic Pending Verification Entries -->
+                                <!-- Pending Verification Entries -->
                             </div>
                         </div>
 
@@ -553,7 +553,7 @@
                         <div id="adminTab-products" class="admin-tab hidden space-y-6">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                 <div class="text-left">
-                                    <h2 class="text-lg font-black text-siyandaDarkGrey">Manage Platform Catalog</h2>
+                                    <h2 class="text-lg font-black text-siyandaDarkGrey">Manage Catalog</h2>
                                     <p class="text-xs text-slate-500">Audit, edit, or delete live public products and control pricing standards.</p>
                                 </div>
                                 <button onclick="openAddProductModal()" class="bg-siyandaOrange hover:bg-siyandaOrangeHover text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1">
@@ -616,7 +616,7 @@
                     <span class="text-lg font-bold tracking-tight text-white">Siyanda<span class="text-siyandaOrange">Market</span></span>
                 </div>
                 <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-                    Connecting township entrepreneurs to buyers across South Africa. Safe transactions, localized support networks, and streamlined parcel logistics in your community.
+                    Connecting township entrepreneurs to buyers across South Africa. Safe transactions, localised support networks, and streamlined parcel logistics in your community.
                 </p>
             </div>
             
@@ -649,7 +649,7 @@
         </div>
     </footer>
 
-    <!-- MODAL CONTAINER: DYNAMIC PRODUCT DETAILS + CHECKOUT (checkout.php simulation) -->
+    <!-- DYNAMIC PRODUCT DETAILS + CHECKOUT -->
     <div id="productDetailModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:grid md:grid-cols-12 text-left relative">
             <button onclick="closeProductModal()" class="absolute right-4 top-4 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 p-2 rounded-full transition-colors z-10">
@@ -695,7 +695,7 @@
                     <!-- Payment Flow Selection Panel -->
                     <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs">
                         <h4 class="font-bold text-siyandaDarkGrey mb-2 flex items-center gap-1">
-                            <i data-lucide="shield-alert" class="h-4 w-4 text-siyandaAccentGreen"></i> Siyanda Secure Escrow
+                            <i data-lucide="shield-alert" class="h-4 w-4 text-siyandaAccentGreen"></i> Secure Payments
                         </h4>
                         <p class="text-slate-500 mb-3 leading-relaxed">Funds are only released once you accept physical delivery of the correct goods from local courier hubs.</p>
                         
@@ -737,7 +737,7 @@
                     <p class="text-xs text-slate-400">List an item in the public market catalog.</p>
                 </div>
 
-                <!-- Hidden inputs for tracking -->
+
                 <input type="hidden" id="editProductId" value="">
 
                 <div>
@@ -795,8 +795,6 @@
         </div>
     </div>
 
-
-    <!-- JAVASCRIPT LOGIC & STATE ENGINE -->
     <script>
         // Seed database for local mock transactions
         const DEFAULT_PRODUCTS = [
@@ -892,8 +890,8 @@
         let selectedPaymentMethodVal = 'eft';
         let currentBrowsingProduct = null;
         let lastActionLogs = [
-            { time: "21:30:04", text: "Database Service Initialized." },
-            { time: "21:35:10", text: "Buyer accessed checkout.php endpoint safely." }
+            { time: "21:30:04", text: "Database Service Initialised." },
+            { time: "21:35:10", text: "Buyer accessed checkout endpoint safely." }
         ];
 
         // Seller Specific variables
